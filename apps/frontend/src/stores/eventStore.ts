@@ -6,6 +6,7 @@ export interface EventFilters {
   city: string
   minPrice: number | null
   maxPrice: number | null
+  startDate: string // YYYY-MM-DD, kosong = tanpa filter
   sort: string
   page: number
 }
@@ -22,6 +23,7 @@ export const defaultFilters: EventFilters = {
   city: '',
   minPrice: null,
   maxPrice: null,
+  startDate: '',
   sort: 'startDate_asc',
   page: 1,
 }
