@@ -14,21 +14,28 @@ export const updateTransactionStatusSchema = z.object({
   reason: z.string().trim().max(500).optional(),
 });
 
-const statusEnum = z.enum([
+const STATUSES = [
   'WAITING_PAYMENT',
   'WAITING_CONFIRMATION',
   'DONE',
   'REJECTED',
   'EXPIRED',
   'CANCELED',
-]);
+] as const
+
+// Satu status atau beberapa dipisah koma, mis. status=EXPIRED,CANCELED
+const statusList = z
+  .string()
+  .optional()
+  .transform((v) => (v ? v.split(',').map((s) => s.trim()).filter(Boolean) : undefined))
+  .pipe(z.array(z.enum(STATUSES)).min(1).optional())
 
 export const transactionFilterSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(10),
-  status: statusEnum.optional(),
+  status: statusList,
   eventId: z.string().optional(),
-});
+})
 
 export type CreateTransactionInput = z.infer<typeof createTransactionSchema>;
 export type TransactionFilterInput = z.infer<typeof transactionFilterSchema>;

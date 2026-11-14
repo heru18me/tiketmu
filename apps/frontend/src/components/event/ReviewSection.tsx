@@ -1,12 +1,12 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useState } from 'react'
 import { api } from '../../lib/axios'
-import { formatDateShort, getErrorMessage, resolveImageUrl } from '../../lib/utils'
+import { formatDateShort, resolveImageUrl } from '../../lib/utils'
 import { useAuthStore } from '../../stores/authStore'
-import type { ApiResponse, PaginatedResponse, Review } from '../../types'
+import type { PaginatedResponse, Review } from '../../types'
 import Button from '../ui/Button'
-import Card from '../ui/Card'
 import EmptyState from '../ui/EmptyState'
 import StarRating from '../ui/StarRating'
+import ReviewForm from './ReviewForm'
 
 interface ReviewSectionProps {
   eventId: string
@@ -26,11 +26,6 @@ export default function ReviewSection({ eventId, avgRating, reviewCount, initial
   const [loadingMore, setLoadingMore] = useState(false)
 
   const [canReview, setCanReview] = useState(false)
-  const [rating, setRating] = useState(0)
-  const [comment, setComment] = useState('')
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState('')
-  const [submitted, setSubmitted] = useState(false)
 
   const isCustomer = user?.role === 'CUSTOMER'
 
@@ -66,28 +61,9 @@ export default function ReviewSection({ eventId, avgRating, reviewCount, initial
     setVisible(next)
   }
 
-  const submit = async (e: FormEvent) => {
-    e.preventDefault()
-    if (rating < 1) {
-      setError('Pilih rating terlebih dahulu')
-      return
-    }
-    setSubmitting(true)
-    setError('')
-    try {
-      const res = await api.post<ApiResponse<Review>>('/reviews', {
-        eventId,
-        rating,
-        ...(comment.trim() && { comment: comment.trim() }),
-      })
-      setReviews((prev) => [res.data.data, ...prev])
-      setTotal((t) => t + 1)
-      setSubmitted(true)
-    } catch (err) {
-      setError(getErrorMessage(err, 'Gagal mengirim review'))
-    } finally {
-      setSubmitting(false)
-    }
+  const handleSubmitted = (review: Review) => {
+    setReviews((prev) => [review, ...prev])
+    setTotal((t) => t + 1)
   }
 
   const shown = reviews.slice(0, visible)
@@ -107,28 +83,11 @@ export default function ReviewSection({ eventId, avgRating, reviewCount, initial
         </div>
       </div>
 
-      {canReview && !submitted && (
-        <Card className="mt-6 p-5">
-          <form onSubmit={submit} className="space-y-3">
-            <h3 className="font-semibold text-gray-900">Tulis ulasanmu</h3>
-            <StarRating rating={rating} size="lg" onChange={setRating} />
-            <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              maxLength={1000}
-              rows={3}
-              placeholder="Ceritakan pengalamanmu (opsional)"
-              aria-label="Komentar"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
-            />
-            {error && <p className="text-sm text-red-600">{error}</p>}
-            <Button type="submit" isLoading={submitting}>
-              Kirim Ulasan
-            </Button>
-          </form>
-        </Card>
+      {canReview && (
+        <div className="mt-6">
+          <ReviewForm eventId={eventId} onSubmitted={handleSubmitted} />
+        </div>
       )}
-      {submitted && <p className="mt-4 text-sm text-green-700">Terima kasih! Ulasanmu sudah terkirim.</p>}
 
       {reviews.length === 0 ? (
         <EmptyState title="Belum ada ulasan" subtitle="Jadilah yang pertama memberi ulasan untuk event ini." />

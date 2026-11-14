@@ -338,7 +338,7 @@ export const getUserTransactions = async (userId: string, filters: TransactionFi
   const { page, limit, status, eventId } = filters;
   const where: Prisma.TransactionWhereInput = {
     userId,
-    ...(status && { status }),
+    ...(status && { status: { in: status } }),
     ...(eventId && { eventId }),
   };
 
@@ -362,7 +362,7 @@ export const getOrganizerTransactions = async (
   const { page, limit, status, eventId } = filters;
   const where: Prisma.TransactionWhereInput = {
     event: { organizerId },
-    ...(status && { status }),
+    ...(status && { status: { in: status } }),
     ...(eventId && { eventId }),
   };
 

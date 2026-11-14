@@ -3,6 +3,9 @@ import { Placeholder } from './Placeholder'
 import LandingPage from '../pages/public/LandingPage'
 import EventListPage from '../pages/public/EventListPage'
 import EventDetailPage from '../pages/public/EventDetailPage'
+import CustomerTransactionListPage from '../pages/customer/CustomerTransactionListPage'
+import CustomerTransactionDetailPage from '../pages/customer/CustomerTransactionDetailPage'
+import CustomerProfilePage from '../pages/customer/CustomerProfilePage'
 import { ProtectedRoute } from './ProtectedRoute'
 
 // TODO: halaman di bawah masih placeholder. Ganti `element` dengan komponen asli saat fase 7–10.
@@ -22,7 +25,7 @@ export const router = createBrowserRouter([
     path: '/customer/transactions',
     element: (
       <ProtectedRoute role="CUSTOMER">
-        <Placeholder name="CustomerTransactionListPage" />
+        <CustomerTransactionListPage />
       </ProtectedRoute>
     ),
   },
@@ -30,7 +33,7 @@ export const router = createBrowserRouter([
     path: '/customer/transactions/:id',
     element: (
       <ProtectedRoute role="CUSTOMER">
-        <Placeholder name="CustomerTransactionDetailPage" />
+        <CustomerTransactionDetailPage />
       </ProtectedRoute>
     ),
   },
@@ -38,7 +41,7 @@ export const router = createBrowserRouter([
     path: '/customer/profile',
     element: (
       <ProtectedRoute role="CUSTOMER">
-        <Placeholder name="CustomerProfilePage" />
+        <CustomerProfilePage />
       </ProtectedRoute>
     ),
   },
