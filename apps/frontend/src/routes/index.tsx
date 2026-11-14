@@ -7,6 +7,9 @@ import CustomerTransactionListPage from '../pages/customer/CustomerTransactionLi
 import CustomerTransactionDetailPage from '../pages/customer/CustomerTransactionDetailPage'
 import CustomerProfilePage from '../pages/customer/CustomerProfilePage'
 import OrganizerDashboardPage from '../pages/organizer/OrganizerDashboardPage'
+import OrganizerEventListPage from '../pages/organizer/OrganizerEventListPage'
+import OrganizerEventCreatePage from '../pages/organizer/OrganizerEventCreatePage'
+import OrganizerEventEditPage from '../pages/organizer/OrganizerEventEditPage'
 import { ProtectedRoute } from './ProtectedRoute'
 
 // TODO: halaman di bawah masih placeholder. Ganti `element` dengan komponen asli saat fase 7–10.
@@ -60,7 +63,7 @@ export const router = createBrowserRouter([
     path: '/organizer/events',
     element: (
       <ProtectedRoute role="ORGANIZER">
-        <Placeholder name="OrganizerEventListPage" />
+        <OrganizerEventListPage />
       </ProtectedRoute>
     ),
   },
@@ -68,7 +71,7 @@ export const router = createBrowserRouter([
     path: '/organizer/events/create',
     element: (
       <ProtectedRoute role="ORGANIZER">
-        <Placeholder name="OrganizerEventCreatePage" />
+        <OrganizerEventCreatePage />
       </ProtectedRoute>
     ),
   },
@@ -76,7 +79,7 @@ export const router = createBrowserRouter([
     path: '/organizer/events/:id/edit',
     element: (
       <ProtectedRoute role="ORGANIZER">
-        <Placeholder name="OrganizerEventEditPage" />
+        <OrganizerEventEditPage />
       </ProtectedRoute>
     ),
   },

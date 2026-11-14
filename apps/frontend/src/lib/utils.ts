@@ -74,3 +74,13 @@ export const formatCompact = (n: number): string => {
   if (abs >= 1_000) return fmt(n / 1_000, 'K')
   return String(n)
 }
+
+export const getEventStatusBadgeColor = (status: string): string =>
+  ({
+    ACTIVE: 'bg-green-100 text-green-800',
+    CANCELLED: 'bg-red-100 text-red-800',
+    COMPLETED: 'bg-gray-200 text-gray-700',
+  })[status] ?? 'bg-gray-100 text-gray-800'
+
+export const getEventStatusLabel = (status: string): string =>
+  ({ ACTIVE: 'Aktif', CANCELLED: 'Dibatalkan', COMPLETED: 'Selesai' })[status] ?? status
