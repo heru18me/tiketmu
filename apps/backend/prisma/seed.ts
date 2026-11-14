@@ -552,6 +552,20 @@ async function seedEvents(organizers: any[], categories: any[]) {
       categoryIdx: 2,
       organizerIdx: 2,
     },
+    {
+      name: 'Pameran Seni Rupa Yogyakarta',
+      description: 'Pameran karya perupa muda Yogyakarta dengan diskusi bersama kurator.',
+      location: 'Jogja National Museum, Yogyakarta',
+      city: 'Yogyakarta',
+      startDate: subDays(now, 50),
+      endDate: subDays(now, 50),
+      totalSeats: 200,
+      price: 75000,
+      isFree: false,
+      status: EventStatus.COMPLETED,
+      categoryIdx: 4,
+      organizerIdx: 4,
+    },
   ];
 
   const events = await Promise.all(
@@ -581,8 +595,8 @@ async function seedEvents(organizers: any[], categories: any[]) {
               eventId: event.id,
               name: 'VIP',
               price: rest.price * 2,
-              totalSeats: Math.floor(rest.totalSeats * 0.3),
-              availableSeats: Math.floor(rest.totalSeats * 0.3),
+              totalSeats: rest.totalSeats - Math.floor(rest.totalSeats * 0.7),
+              availableSeats: rest.totalSeats - Math.floor(rest.totalSeats * 0.7),
               description: 'Akses prioritas, merchandise eksklusif, meet & greet',
             }
           ]
@@ -700,9 +714,10 @@ async function seedTransactions(customers: any[], events: any[]) {
     const event = events.find(e => e.id === t.eventId);
     if (!event) continue;
 
-    const ticketType = await prisma.ticketType.findFirst({
-      where: { eventId: event.id, name: 'Regular' }
-    });
+    // Event gratis tidak punya tiket 'Regular' (hanya 'Free Entry'); pakai tiket pertama sebagai cadangan
+    const ticketType =
+      (await prisma.ticketType.findFirst({ where: { eventId: event.id, name: 'Regular' } })) ??
+      (await prisma.ticketType.findFirst({ where: { eventId: event.id } }));
     if (!ticketType) continue;
 
     const quantity = Math.floor(Math.random() * 2) + 1;
