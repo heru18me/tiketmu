@@ -12,7 +12,12 @@ import OrganizerEventCreatePage from '../pages/organizer/OrganizerEventCreatePag
 import OrganizerEventEditPage from '../pages/organizer/OrganizerEventEditPage'
 import OrganizerAttendeeListPage from '../pages/organizer/OrganizerAttendeeListPage'
 import OrganizerTransactionListPage from '../pages/organizer/OrganizerTransactionListPage'
+import LoginPage from '../pages/auth/LoginPage'
+import RegisterPage from '../pages/auth/RegisterPage'
+import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage'
+import ResetPasswordPage from '../pages/auth/ResetPasswordPage'
 import { ProtectedRoute } from './ProtectedRoute'
+import { GuestRoute } from './GuestRoute'
 
 // TODO: halaman di bawah masih placeholder. Ganti `element` dengan komponen asli saat fase 7–10.
 
@@ -21,10 +26,26 @@ export const router = createBrowserRouter([
   { path: '/', element: <LandingPage /> },
   { path: '/events', element: <EventListPage /> },
   { path: '/events/:id', element: <EventDetailPage /> },
-  { path: '/login', element: <Placeholder name="LoginPage" /> },
-  { path: '/register', element: <Placeholder name="RegisterPage" /> },
-  { path: '/forgot-password', element: <Placeholder name="ForgotPasswordPage" /> },
-  { path: '/reset-password', element: <Placeholder name="ResetPasswordPage" /> },
+  { path: '/login', element: (
+      <GuestRoute>
+        <LoginPage />
+      </GuestRoute>
+    ) },
+  { path: '/register', element: (
+      <GuestRoute>
+        <RegisterPage />
+      </GuestRoute>
+    ) },
+  { path: '/forgot-password', element: (
+      <GuestRoute>
+        <ForgotPasswordPage />
+      </GuestRoute>
+    ) },
+  { path: '/reset-password', element: (
+      <GuestRoute>
+        <ResetPasswordPage />
+      </GuestRoute>
+    ) },
 
   // CUSTOMER ONLY
   {
