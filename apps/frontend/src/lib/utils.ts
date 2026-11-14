@@ -84,3 +84,29 @@ export const getEventStatusBadgeColor = (status: string): string =>
 
 export const getEventStatusLabel = (status: string): string =>
   ({ ACTIVE: 'Aktif', CANCELLED: 'Dibatalkan', COMPLETED: 'Selesai' })[status] ?? status
+
+export const formatDateTime = (date: string): string =>
+  new Date(date).toLocaleString('id-ID', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+
+/** Buat & unduh file CSV (BOM agar Excel membaca UTF-8; sel berawalan = + - @ dinetralkan dari formula injection). */
+export const downloadCsv = (filename: string, rows: (string | number)[][]): void => {
+  const escape = (v: string | number) => {
+    let s = String(v)
+    if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`
+    return `"${s.replace(/"/g, '""')}"`
+  }
+  const csv = rows.map((r) => r.map(escape).join(',')).join('\r\n')
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
+}

@@ -10,6 +10,8 @@ import OrganizerDashboardPage from '../pages/organizer/OrganizerDashboardPage'
 import OrganizerEventListPage from '../pages/organizer/OrganizerEventListPage'
 import OrganizerEventCreatePage from '../pages/organizer/OrganizerEventCreatePage'
 import OrganizerEventEditPage from '../pages/organizer/OrganizerEventEditPage'
+import OrganizerAttendeeListPage from '../pages/organizer/OrganizerAttendeeListPage'
+import OrganizerTransactionListPage from '../pages/organizer/OrganizerTransactionListPage'
 import { ProtectedRoute } from './ProtectedRoute'
 
 // TODO: halaman di bawah masih placeholder. Ganti `element` dengan komponen asli saat fase 7–10.
@@ -87,7 +89,7 @@ export const router = createBrowserRouter([
     path: '/organizer/events/:id/attendees',
     element: (
       <ProtectedRoute role="ORGANIZER">
-        <Placeholder name="OrganizerAttendeeListPage" />
+        <OrganizerAttendeeListPage />
       </ProtectedRoute>
     ),
   },
@@ -95,7 +97,7 @@ export const router = createBrowserRouter([
     path: '/organizer/transactions',
     element: (
       <ProtectedRoute role="ORGANIZER">
-        <Placeholder name="OrganizerTransactionListPage" />
+        <OrganizerTransactionListPage />
       </ProtectedRoute>
     ),
   },
