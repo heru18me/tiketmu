@@ -1,6 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import * as authService from '../services/auth.service';
-import { registerSchema, loginSchema } from '../validators/auth.validator';
+import {
+  registerSchema,
+  loginSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+} from '../validators/auth.validator';
 import { sendSuccess } from '../utils/response';
 import { AppError } from '../utils/AppError';
 
@@ -83,7 +88,9 @@ export const logout = async (req: Request, res: Response, next: NextFunction) =>
 
 export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // Implementasi sederhana — selalu return success untuk security
+    const { email } = forgotPasswordSchema.parse(req.body);
+    await authService.requestPasswordReset(email);
+    // Selalu respons yang sama, terlepas email terdaftar atau tidak
     sendSuccess(res, null, 'If your email exists, a reset link has been sent');
   } catch (error) {
     next(error);
@@ -92,6 +99,8 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
 
 export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const { token, newPassword } = resetPasswordSchema.parse(req.body);
+    await authService.resetPassword(token, newPassword);
     sendSuccess(res, null, 'Password reset successful');
   } catch (error) {
     next(error);
