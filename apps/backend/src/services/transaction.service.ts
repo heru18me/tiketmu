@@ -335,8 +335,12 @@ const paginate = (total: number, page: number, limit: number) => ({
 });
 
 export const getUserTransactions = async (userId: string, filters: TransactionFilterInput) => {
-  const { page, limit, status } = filters;
-  const where: Prisma.TransactionWhereInput = { userId, ...(status && { status }) };
+  const { page, limit, status, eventId } = filters;
+  const where: Prisma.TransactionWhereInput = {
+    userId,
+    ...(status && { status }),
+    ...(eventId && { eventId }),
+  };
 
   const [total, transactions] = await Promise.all([
     prisma.transaction.count({ where }),

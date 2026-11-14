@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import { Placeholder } from './Placeholder'
 import LandingPage from '../pages/public/LandingPage'
 import EventListPage from '../pages/public/EventListPage'
+import EventDetailPage from '../pages/public/EventDetailPage'
 import { ProtectedRoute } from './ProtectedRoute'
 
 // TODO: halaman di bawah masih placeholder. Ganti `element` dengan komponen asli saat fase 7–10.
@@ -10,7 +11,7 @@ export const router = createBrowserRouter([
   // PUBLIC
   { path: '/', element: <LandingPage /> },
   { path: '/events', element: <EventListPage /> },
-  { path: '/events/:id', element: <Placeholder name="EventDetailPage" /> },
+  { path: '/events/:id', element: <EventDetailPage /> },
   { path: '/login', element: <Placeholder name="LoginPage" /> },
   { path: '/register', element: <Placeholder name="RegisterPage" /> },
   { path: '/forgot-password', element: <Placeholder name="ForgotPasswordPage" /> },

@@ -1,3 +1,5 @@
+import { isAxiosError } from 'axios'
+
 export const formatIDR = (amount: number): string =>
   new Intl.NumberFormat('id-ID', {
     style: 'currency',
@@ -53,3 +55,12 @@ export const formatDateShort = (date: string): string =>
     month: 'short',
     year: 'numeric',
   })
+
+/** Ambil pesan error dari respons API (atau fallback). */
+export const getErrorMessage = (error: unknown, fallback = 'Terjadi kesalahan. Coba lagi.'): string => {
+  if (isAxiosError(error)) {
+    const data = error.response?.data as { message?: string; errors?: { message: string }[] } | undefined
+    return data?.errors?.[0]?.message ?? data?.message ?? fallback
+  }
+  return fallback
+}
