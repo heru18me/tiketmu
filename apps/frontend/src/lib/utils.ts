@@ -64,3 +64,13 @@ export const getErrorMessage = (error: unknown, fallback = 'Terjadi kesalahan. C
   }
   return fallback
 }
+
+/** Angka singkat untuk sumbu grafik: 1500000 → "1.5M", 500000 → "500K". */
+export const formatCompact = (n: number): string => {
+  const abs = Math.abs(n)
+  const fmt = (v: number, suffix: string) => `${Number.isInteger(v) ? v : v.toFixed(1)}${suffix}`
+  if (abs >= 1_000_000_000) return fmt(n / 1_000_000_000, 'B')
+  if (abs >= 1_000_000) return fmt(n / 1_000_000, 'M')
+  if (abs >= 1_000) return fmt(n / 1_000, 'K')
+  return String(n)
+}
