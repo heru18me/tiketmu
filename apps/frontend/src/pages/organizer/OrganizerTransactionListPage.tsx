@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { api } from '../../lib/axios'
+import { toast } from '../../lib/toast'
 import { formatDateTime, formatIDR, getErrorMessage, getStatusLabel, resolveImageUrl } from '../../lib/utils'
 import type {
   ApiResponse,
@@ -57,7 +58,6 @@ export default function OrganizerTransactionListPage() {
   const [proof, setProof] = useState<Transaction | null>(null)
   const [pending, setPending] = useState<PendingAction | null>(null)
   const [processing, setProcessing] = useState(false)
-  const [actionMessage, setActionMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   // Dropdown event milik organizer
   useEffect(() => {
@@ -98,20 +98,16 @@ export default function OrganizerTransactionListPage() {
   const runAction = async () => {
     if (!pending) return
     setProcessing(true)
-    setActionMessage(null)
     const { transaction, action } = pending
     try {
       await api.put<ApiResponse<Transaction>>(`/transactions/${transaction.id}/status`, { action })
-      setActionMessage({
-        type: 'success',
-        text: action === 'ACCEPT' ? 'Transaksi diterima.' : 'Transaksi ditolak dan pesanan dikembalikan.',
-      })
+      toast.success(action === 'ACCEPT' ? 'Transaksi diterima' : 'Transaksi ditolak, pesanan dikembalikan')
       setPending(null)
       // Jika baris terakhir pada halaman >1 berpindah keluar dari filter, mundur satu halaman
       if (result?.items.length === 1 && page > 1 && status) setFilter({ page: page - 1 })
       else setReloadCount((c) => c + 1)
     } catch (error) {
-      setActionMessage({ type: 'error', text: getErrorMessage(error, 'Gagal memproses transaksi') })
+      toast.error(getErrorMessage(error, 'Gagal memproses transaksi'))
       setPending(null)
       setReloadCount((c) => c + 1) // status mungkin sudah berubah (mis. dibatalkan otomatis)
     } finally {
@@ -147,15 +143,6 @@ export default function OrganizerTransactionListPage() {
           ))}
         </select>
       </div>
-
-      {actionMessage && (
-        <p
-          role={actionMessage.type === 'error' ? 'alert' : 'status'}
-          className={`mt-4 rounded-lg px-4 py-3 text-sm ${actionMessage.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}
-        >
-          {actionMessage.text}
-        </p>
-      )}
 
       <Card className="mt-4 overflow-hidden">
         {loading ? (

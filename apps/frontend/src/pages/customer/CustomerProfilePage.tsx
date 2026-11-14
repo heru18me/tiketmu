@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { api } from '../../lib/axios'
+import { toast } from '../../lib/toast'
 import { formatIDR, getErrorMessage, resolveImageUrl } from '../../lib/utils'
 import { useAuthStore } from '../../stores/authStore'
 import type { ApiResponse, Coupon, User } from '../../types'
@@ -25,7 +26,6 @@ export default function CustomerProfilePage() {
 
   const fileRef = useRef<HTMLInputElement>(null)
   const [avatarUploading, setAvatarUploading] = useState(false)
-  const [avatarError, setAvatarError] = useState('')
 
   useEffect(() => {
     let cancelled = false
@@ -51,19 +51,19 @@ export default function CustomerProfilePage() {
 
   const changeAvatar = async (file: File | undefined) => {
     if (!file) return
-    if (!AVATAR_TYPES.includes(file.type)) return setAvatarError('Format harus JPG, PNG, atau WebP')
-    if (file.size > AVATAR_MAX) return setAvatarError('Ukuran foto maksimal 2MB')
+    if (!AVATAR_TYPES.includes(file.type)) return toast.error('Format foto harus JPG, PNG, atau WebP')
+    if (file.size > AVATAR_MAX) return toast.error('Ukuran foto maksimal 2MB')
 
     setAvatarUploading(true)
-    setAvatarError('')
     try {
       const body = new FormData()
       body.append('avatar', file)
       const res = await api.put<ApiResponse<User>>('/users/me', body)
       setProfile((p) => (p ? { ...p, avatar: res.data.data.avatar } : p))
       syncAuth({ avatar: res.data.data.avatar })
+      toast.success('Foto profil diperbarui')
     } catch (error) {
-      setAvatarError(getErrorMessage(error, 'Gagal mengunggah foto'))
+      toast.error(getErrorMessage(error, 'Gagal mengunggah foto'))
     } finally {
       setAvatarUploading(false)
     }
@@ -122,7 +122,6 @@ export default function CustomerProfilePage() {
             <Button size="sm" variant="outline" isLoading={avatarUploading} onClick={() => fileRef.current?.click()}>
               Ubah Foto
             </Button>
-            {avatarError && <p role="alert" className="max-w-40 text-center text-xs text-red-600">{avatarError}</p>}
           </div>
 
           <div className="min-w-0 flex-1 space-y-3 text-center sm:text-left">

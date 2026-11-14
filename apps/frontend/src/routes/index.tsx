@@ -1,25 +1,26 @@
 import { createBrowserRouter } from 'react-router-dom'
-import { Placeholder } from './Placeholder'
-import LandingPage from '../pages/public/LandingPage'
-import EventListPage from '../pages/public/EventListPage'
-import EventDetailPage from '../pages/public/EventDetailPage'
-import CustomerTransactionListPage from '../pages/customer/CustomerTransactionListPage'
-import CustomerTransactionDetailPage from '../pages/customer/CustomerTransactionDetailPage'
-import CustomerProfilePage from '../pages/customer/CustomerProfilePage'
-import OrganizerDashboardPage from '../pages/organizer/OrganizerDashboardPage'
-import OrganizerEventListPage from '../pages/organizer/OrganizerEventListPage'
-import OrganizerEventCreatePage from '../pages/organizer/OrganizerEventCreatePage'
-import OrganizerEventEditPage from '../pages/organizer/OrganizerEventEditPage'
-import OrganizerAttendeeListPage from '../pages/organizer/OrganizerAttendeeListPage'
-import OrganizerTransactionListPage from '../pages/organizer/OrganizerTransactionListPage'
-import LoginPage from '../pages/auth/LoginPage'
-import RegisterPage from '../pages/auth/RegisterPage'
-import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage'
-import ResetPasswordPage from '../pages/auth/ResetPasswordPage'
 import { ProtectedRoute } from './ProtectedRoute'
 import { GuestRoute } from './GuestRoute'
+import {
+  LandingPage,
+  EventListPage,
+  EventDetailPage,
+  CustomerTransactionListPage,
+  CustomerTransactionDetailPage,
+  CustomerProfilePage,
+  OrganizerDashboardPage,
+  OrganizerEventListPage,
+  OrganizerEventCreatePage,
+  OrganizerEventEditPage,
+  OrganizerAttendeeListPage,
+  OrganizerTransactionListPage,
+  LoginPage,
+  RegisterPage,
+  ForgotPasswordPage,
+  ResetPasswordPage,
+  NotFoundPage,
+} from './lazyPages'
 
-// TODO: halaman di bawah masih placeholder. Ganti `element` dengan komponen asli saat fase 7–10.
 
 export const router = createBrowserRouter([
   // PUBLIC
@@ -123,5 +124,5 @@ export const router = createBrowserRouter([
     ),
   },
 
-  { path: '*', element: <Placeholder name="404 — Halaman tidak ditemukan" /> },
+  { path: '*', element: <NotFoundPage /> },
 ])

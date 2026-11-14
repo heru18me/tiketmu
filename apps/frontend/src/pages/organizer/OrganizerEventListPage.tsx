@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../../lib/axios'
+import { toast } from '../../lib/toast'
 import {
   formatDateShort,
   getErrorMessage,
@@ -57,7 +58,6 @@ export default function OrganizerEventListPage() {
 
   const [toDelete, setToDelete] = useState<Event | null>(null)
   const [deleting, setDeleting] = useState(false)
-  const [deleteError, setDeleteError] = useState('')
 
   useEffect(() => {
     let cancelled = false
@@ -85,16 +85,16 @@ export default function OrganizerEventListPage() {
   const handleDelete = async () => {
     if (!toDelete) return
     setDeleting(true)
-    setDeleteError('')
     try {
       await api.delete(`/events/${toDelete.id}`)
+      toast.success('Event dibatalkan')
       setToDelete(null)
       // Jika baris terakhir di halaman ini dibatalkan & difilter, mundur satu halaman agar tidak kosong
       if (result?.events.length === 1 && page > 1 && status) setFilter({ page: page - 1 })
       else setReloadCount((c) => c + 1)
     } catch (error) {
       setToDelete(null)
-      setDeleteError(getErrorMessage(error, 'Gagal menghapus event'))
+      toast.error(getErrorMessage(error, 'Gagal menghapus event'))
     } finally {
       setDeleting(false)
     }
@@ -123,12 +123,6 @@ export default function OrganizerEventListPage() {
           ))}
         </select>
       </div>
-
-      {deleteError && (
-        <p role="alert" className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
-          {deleteError}
-        </p>
-      )}
 
       <Card className="mt-4 overflow-hidden">
         {loading ? (
@@ -207,7 +201,6 @@ export default function OrganizerEventListPage() {
                             aria-label={`Hapus ${e.name}`}
                             disabled={cancelled}
                             onClick={() => {
-                              setDeleteError('')
                               setToDelete(e)
                             }}
                           >

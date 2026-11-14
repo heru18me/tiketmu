@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { isAxiosError } from 'axios'
 import { api } from '../../lib/axios'
+import { toast } from '../../lib/toast'
 import { buildEventFormData, normalizeTickets, valuesFromEvent, type EventFormValues } from '../../lib/eventForm'
 import { getEventStatusLabel } from '../../lib/utils'
 import { useAuthStore } from '../../stores/authStore'
@@ -72,6 +73,7 @@ export default function OrganizerEventEditPage() {
       JSON.stringify(normalizeTickets(values)) !== JSON.stringify(normalizeTickets(initial))
 
     await api.put(`/events/${event.id}`, buildEventFormData(values, image, { includeTickets: ticketsChanged }))
+    toast.success('Event berhasil diperbarui')
     navigate('/organizer/events')
   }
 

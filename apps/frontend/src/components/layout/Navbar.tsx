@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../../lib/axios'
+import { toast } from '../../lib/toast'
 import { resolveImageUrl } from '../../lib/utils'
 import { useScrollPosition } from '../../hooks/useScrollPosition'
 import { useAuthStore } from '../../stores/authStore'
@@ -83,6 +84,7 @@ export default function Navbar({ transparentAtTop = false }: NavbarProps) {
       setIsLoggingOut(false)
       setConfirmLogout(false)
       navigate('/')
+      toast.info('Kamu telah keluar')
     }
   }
 

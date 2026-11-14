@@ -6,6 +6,7 @@ import { isAxiosError } from 'axios'
 import { z } from 'zod'
 import { api } from '../../lib/axios'
 import { establishSession } from '../../lib/authSession'
+import { toast } from '../../lib/toast'
 import { getErrorMessage } from '../../lib/utils'
 import type { ApiResponse } from '../../types'
 import AuthLayout from '../../components/layout/AuthLayout'
@@ -59,7 +60,8 @@ export default function RegisterPage() {
         ...(values.referralCode && { referralCode: values.referralCode.toUpperCase() }),
       })
       // Auto-login; GuestRoute mengarahkan ke halaman asal atau beranda
-      await establishSession(res.data.data.accessToken)
+      const user = await establishSession(res.data.data.accessToken)
+      toast.success(`Akun berhasil dibuat. Selamat datang, ${user.name}`)
     } catch (err) {
       setError(
         isAxiosError(err) && err.response?.status === 409

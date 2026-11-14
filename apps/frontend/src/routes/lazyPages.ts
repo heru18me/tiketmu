@@ -1,0 +1,20 @@
+import { lazy } from 'react'
+
+// Halaman dimuat per-route agar bundel awal kecil.
+export const LandingPage = lazy(() => import('../pages/public/LandingPage'))
+export const EventListPage = lazy(() => import('../pages/public/EventListPage'))
+export const EventDetailPage = lazy(() => import('../pages/public/EventDetailPage'))
+export const CustomerTransactionListPage = lazy(() => import('../pages/customer/CustomerTransactionListPage'))
+export const CustomerTransactionDetailPage = lazy(() => import('../pages/customer/CustomerTransactionDetailPage'))
+export const CustomerProfilePage = lazy(() => import('../pages/customer/CustomerProfilePage'))
+export const OrganizerDashboardPage = lazy(() => import('../pages/organizer/OrganizerDashboardPage'))
+export const OrganizerEventListPage = lazy(() => import('../pages/organizer/OrganizerEventListPage'))
+export const OrganizerEventCreatePage = lazy(() => import('../pages/organizer/OrganizerEventCreatePage'))
+export const OrganizerEventEditPage = lazy(() => import('../pages/organizer/OrganizerEventEditPage'))
+export const OrganizerAttendeeListPage = lazy(() => import('../pages/organizer/OrganizerAttendeeListPage'))
+export const OrganizerTransactionListPage = lazy(() => import('../pages/organizer/OrganizerTransactionListPage'))
+export const LoginPage = lazy(() => import('../pages/auth/LoginPage'))
+export const RegisterPage = lazy(() => import('../pages/auth/RegisterPage'))
+export const ForgotPasswordPage = lazy(() => import('../pages/auth/ForgotPasswordPage'))
+export const ResetPasswordPage = lazy(() => import('../pages/auth/ResetPasswordPage'))
+export const NotFoundPage = lazy(() => import('../pages/NotFoundPage'))

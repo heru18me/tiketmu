@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { isAxiosError } from 'axios'
 import { api } from '../../lib/axios'
+import { toast } from '../../lib/toast'
 import { formatDate, formatIDR, getStatusLabel, resolveImageUrl } from '../../lib/utils'
 import { useCountdown } from '../../hooks/useCountdown'
 import type { ApiResponse, Transaction, TransactionStatus } from '../../types'
@@ -82,7 +83,10 @@ export default function CustomerTransactionDetailPage() {
     }
   }, [id])
 
-  const updateTransaction = (transaction: Transaction) => setResult({ id, transaction, notFound: false })
+  const updateTransaction = (transaction: Transaction) => {
+    setResult({ id, transaction, notFound: false })
+    toast.success('Bukti pembayaran terunggah. Menunggu konfirmasi organizer.')
+  }
 
   if (result?.id !== id) {
     return (

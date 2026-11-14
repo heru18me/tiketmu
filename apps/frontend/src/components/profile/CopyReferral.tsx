@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { toast } from '../../lib/toast'
 import Button from '../ui/Button'
 
 export default function CopyReferral({ code }: { code: string }) {
@@ -20,6 +21,7 @@ export default function CopyReferral({ code }: { code: string }) {
       el.remove()
     }
     setCopied(true)
+    toast.success('Kode referral disalin')
     clearTimeout(timer.current)
     timer.current = setTimeout(() => setCopied(false), 2000)
   }

@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { api } from '../../lib/axios'
+import { toast } from '../../lib/toast'
 import { getErrorMessage } from '../../lib/utils'
 import Button from '../ui/Button'
 import Card from '../ui/Card'
@@ -40,21 +41,19 @@ export default function ChangePasswordForm() {
 
   const [pending, setPending] = useState<FormValues | null>(null)
   const [saving, setSaving] = useState(false)
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   const save = async () => {
     if (!pending) return
     setSaving(true)
-    setMessage(null)
     try {
       await api.put('/users/me/password', {
         currentPassword: pending.currentPassword,
         newPassword: pending.newPassword,
       })
       reset()
-      setMessage({ type: 'success', text: 'Password berhasil diganti.' })
+      toast.success('Password berhasil diganti')
     } catch (error) {
-      setMessage({ type: 'error', text: getErrorMessage(error, 'Gagal mengganti password') })
+      toast.error(getErrorMessage(error, 'Gagal mengganti password'))
     } finally {
       setSaving(false)
       setPending(null)
@@ -86,11 +85,6 @@ export default function ChangePasswordForm() {
           error={errors.confirmPassword?.message}
           autoComplete="new-password"
         />
-        {message && (
-          <p role="status" className={`text-sm ${message.type === 'success' ? 'text-green-700' : 'text-red-600'}`}>
-            {message.text}
-          </p>
-        )}
         <Button type="submit">Ganti Password</Button>
       </form>
 

@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { api } from '../../lib/axios'
+import { toast } from '../../lib/toast'
 import { buildEventFormData, type EventFormValues } from '../../lib/eventForm'
 import OrganizerLayout from '../../components/layout/OrganizerLayout'
 import EventForm from '../../components/event/EventForm'
@@ -9,6 +10,7 @@ export default function OrganizerEventCreatePage() {
 
   const handleSubmit = async (values: EventFormValues, image: File | null) => {
     await api.post('/events', buildEventFormData(values, image))
+    toast.success('Event berhasil dibuat')
     navigate('/organizer/events')
   }
 

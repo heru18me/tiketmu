@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../lib/axios'
 import { calcSummary } from '../../lib/pricing'
+import { toast } from '../../lib/toast'
 import { formatIDR, getErrorMessage } from '../../lib/utils'
 import type { ApiResponse, Coupon, DiscountType, EventDetail, Transaction, User } from '../../types'
 import Button from '../ui/Button'
@@ -116,6 +117,7 @@ export default function CheckoutModal({ event, onClose }: CheckoutModalProps) {
         ...(coupon && { couponCode: coupon.code }),
         ...(summary.pointsUsed > 0 && { usePoints: summary.pointsUsed }),
       })
+      toast.success('Transaksi dibuat. Unggah bukti pembayaran dalam 2 jam.')
       navigate(`/customer/transactions/${res.data.data.id}`)
     } catch (error) {
       setConfirmOpen(false)

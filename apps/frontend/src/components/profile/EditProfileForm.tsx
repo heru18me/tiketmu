@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { api } from '../../lib/axios'
+import { toast } from '../../lib/toast'
 import { getErrorMessage } from '../../lib/utils'
 import type { ApiResponse, User } from '../../types'
 import Button from '../ui/Button'
@@ -38,12 +39,10 @@ export default function EditProfileForm({ name, phoneNumber, onSaved }: EditProf
 
   const [pending, setPending] = useState<FormValues | null>(null)
   const [saving, setSaving] = useState(false)
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   const save = async () => {
     if (!pending) return
     setSaving(true)
-    setMessage(null)
     try {
       // Backend belum mendukung menghapus nomor HP, jadi hanya dikirim jika terisi
       const res = await api.put<ApiResponse<User>>('/users/me', {
@@ -52,9 +51,9 @@ export default function EditProfileForm({ name, phoneNumber, onSaved }: EditProf
       })
       onSaved(res.data.data)
       reset({ name: res.data.data.name, phoneNumber: res.data.data.phoneNumber ?? '' })
-      setMessage({ type: 'success', text: 'Profil berhasil diperbarui.' })
+      toast.success('Profil berhasil diperbarui')
     } catch (error) {
-      setMessage({ type: 'error', text: getErrorMessage(error, 'Gagal memperbarui profil') })
+      toast.error(getErrorMessage(error, 'Gagal memperbarui profil'))
     } finally {
       setSaving(false)
       setPending(null)
@@ -74,11 +73,6 @@ export default function EditProfileForm({ name, phoneNumber, onSaved }: EditProf
           error={errors.phoneNumber?.message}
           autoComplete="tel"
         />
-        {message && (
-          <p role="status" className={`text-sm ${message.type === 'success' ? 'text-green-700' : 'text-red-600'}`}>
-            {message.text}
-          </p>
-        )}
         <Button type="submit" disabled={!isDirty}>
           Simpan Perubahan
         </Button>

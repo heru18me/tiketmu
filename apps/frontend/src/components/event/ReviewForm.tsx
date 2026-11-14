@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { isAxiosError } from 'axios'
 import { api } from '../../lib/axios'
+import { toast } from '../../lib/toast'
 import { getErrorMessage } from '../../lib/utils'
 import type { ApiResponse, Review } from '../../types'
 import Button from '../ui/Button'
@@ -34,6 +35,7 @@ export default function ReviewForm({ eventId, onSubmitted }: ReviewFormProps) {
         ...(comment.trim() && { comment: comment.trim() }),
       })
       setDone('submitted')
+      toast.success('Ulasanmu sudah terkirim')
       onSubmitted?.(res.data.data)
     } catch (err) {
       // 409 = sudah pernah review event ini
