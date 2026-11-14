@@ -46,3 +46,10 @@ export const resolveImageUrl = (path: string | null | undefined): string | null 
   const origin = String(import.meta.env.VITE_API_BASE_URL).replace(/\/api\/?$/, '')
   return `${origin}${path}`
 }
+
+export const formatDateShort = (date: string): string =>
+  new Date(date).toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  })
