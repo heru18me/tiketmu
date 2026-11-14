@@ -1,0 +1,13 @@
+node_modules/
+dist/
+build/
+.env
+.env.local
+apps/backend/uploads/
+PROJECT_CONTEXT.md
+DATABASE_SCHEMA.md
+API_GUIDE.md
+FRONTEND_GUIDE.md
+SEED_DATA.md
+CLAUDE_CODE_PROMPTS.md
+BOOTCAMP_MODULES.md

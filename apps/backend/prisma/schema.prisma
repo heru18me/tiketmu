@@ -1,0 +1,240 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  ORGANIZER
+}
+
+enum EventStatus {
+  ACTIVE
+  CANCELLED
+  COMPLETED
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+enum TransactionStatus {
+  WAITING_PAYMENT
+  WAITING_CONFIRMATION
+  DONE
+  REJECTED
+  EXPIRED
+  CANCELED
+}
+
+enum PointSourceType {
+  REFERRAL
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  password     String
+  name         String
+  role         Role     @default(CUSTOMER)
+  avatar       String?
+  referralCode String   @unique
+  phoneNumber  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  eventsOrganized  Event[]       @relation("OrganizerEvents")
+  transactions     Transaction[]
+  reviews          Review[]
+  points           Point[]
+  coupons          Coupon[]
+  referralsGiven   Referral[]    @relation("ReferralGiver")
+  referralReceived Referral?     @relation("ReferralReceiver")
+
+  @@map("users")
+}
+
+model EventCategory {
+  id     String  @id @default(cuid())
+  name   String  @unique
+  events Event[]
+
+  @@map("event_categories")
+}
+
+model Event {
+  id             String      @id @default(cuid())
+  organizerId    String
+  categoryId     String
+  name           String
+  description    String      @db.Text
+  location       String
+  city           String
+  startDate      DateTime
+  endDate        DateTime
+  availableSeats Int
+  totalSeats     Int
+  price          Int         @default(0)
+  isFree         Boolean     @default(false)
+  imageUrl       String?
+  status         EventStatus @default(ACTIVE)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  organizer    User          @relation("OrganizerEvents", fields: [organizerId], references: [id])
+  category     EventCategory @relation(fields: [categoryId], references: [id])
+  ticketTypes  TicketType[]
+  vouchers     Voucher[]
+  transactions Transaction[]
+  reviews      Review[]
+
+  @@map("events")
+}
+
+model TicketType {
+  id             String  @id @default(cuid())
+  eventId        String
+  name           String
+  price          Int
+  availableSeats Int
+  totalSeats     Int
+  description    String?
+
+  event              Event               @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  transactionDetails TransactionDetail[]
+
+  @@map("ticket_types")
+}
+
+model Voucher {
+  id           String       @id @default(cuid())
+  eventId      String
+  code         String       @unique
+  discount     Int
+  discountType DiscountType @default(PERCENTAGE)
+  maxUsage     Int
+  usedCount    Int          @default(0)
+  startDate    DateTime
+  endDate      DateTime
+  createdAt    DateTime     @default(now())
+
+  event        Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@map("vouchers")
+}
+
+model Coupon {
+  id           String       @id @default(cuid())
+  userId       String
+  code         String       @unique
+  discount     Int
+  discountType DiscountType @default(PERCENTAGE)
+  expiredAt    DateTime
+  isUsed       Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+
+  user        User         @relation(fields: [userId], references: [id])
+  transaction Transaction?
+
+  @@map("coupons")
+}
+
+model Transaction {
+  id              String            @id @default(cuid())
+  userId          String
+  eventId         String
+  voucherId       String?
+  couponId        String?           @unique
+  status          TransactionStatus @default(WAITING_PAYMENT)
+  totalAmount     Int
+  finalAmount     Int
+  pointsUsed      Int               @default(0)
+  voucherDiscount Int               @default(0)
+  couponDiscount  Int               @default(0)
+  quantity        Int               @default(1)
+  paymentDeadline DateTime
+  confirmDeadline DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  user         User                @relation(fields: [userId], references: [id])
+  event        Event               @relation(fields: [eventId], references: [id])
+  voucher      Voucher?            @relation(fields: [voucherId], references: [id])
+  coupon       Coupon?             @relation(fields: [couponId], references: [id])
+  details      TransactionDetail[]
+  paymentProof PaymentProof?
+
+  @@map("transactions")
+}
+
+model TransactionDetail {
+  id            String @id @default(cuid())
+  transactionId String
+  ticketTypeId  String
+  quantity      Int
+  price         Int
+  subtotal      Int
+
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  ticketType  TicketType  @relation(fields: [ticketTypeId], references: [id])
+
+  @@map("transaction_details")
+}
+
+model PaymentProof {
+  id            String   @id @default(cuid())
+  transactionId String   @unique
+  imageUrl      String
+  uploadedAt    DateTime @default(now())
+
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@map("payment_proofs")
+}
+
+model Point {
+  id         String          @id @default(cuid())
+  userId     String
+  amount     Int
+  expiredAt  DateTime
+  isExpired  Boolean         @default(false)
+  sourceType PointSourceType @default(REFERRAL)
+  createdAt  DateTime        @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("points")
+}
+
+model Referral {
+  id         String   @id @default(cuid())
+  giverId    String
+  receiverId String   @unique
+  createdAt  DateTime @default(now())
+
+  giver    User @relation("ReferralGiver", fields: [giverId], references: [id])
+  receiver User @relation("ReferralReceiver", fields: [receiverId], references: [id])
+
+  @@map("referrals")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  eventId   String
+  rating    Int
+  comment   String?  @db.Text
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id])
+  event Event @relation(fields: [eventId], references: [id])
+
+  @@unique([userId, eventId])
+  @@map("reviews")
+}
