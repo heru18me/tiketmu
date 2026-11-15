@@ -104,16 +104,17 @@ export default function Navbar({ transparentAtTop = false }: NavbarProps) {
     <>
       <header
         className={`fixed inset-x-0 top-0 z-40 transition-colors duration-200 ${
-          transparent ? 'bg-transparent' : 'bg-white shadow-sm'
+          transparent ? 'bg-transparent' : 'border-b border-gray-200 bg-white shadow-sm'
         }`}
       >
         <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-8">
             <Link
               to="/"
-              className={`text-2xl font-extrabold tracking-tight ${transparent ? 'text-white' : 'text-primary-600'}`}
+              className="text-xl font-bold tracking-tight"
             >
-              Tiketmu
+              <span className={transparent ? 'text-white' : 'text-gray-900'}>tiket</span>
+              <span className={transparent ? 'text-blue-400' : 'text-blue-600'}>mu</span>
             </Link>
             <div className="hidden items-center gap-6 md:flex">
               <NavLink to="/events" className={linkClass}>
