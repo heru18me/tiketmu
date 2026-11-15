@@ -27,10 +27,10 @@ export default function ConfirmDialog({
     <Modal isOpen={isOpen} onClose={isLoading ? () => undefined : onClose} title={title} size="sm">
       <p className="text-sm text-gray-600">{message}</p>
       <div className="mt-6 flex justify-end gap-3">
-        <Button variant="outline" onClick={onClose} disabled={isLoading}>
+        <Button variant="danger" onClick={onClose} disabled={isLoading}>
           {cancelText}
         </Button>
-        <Button variant="danger" onClick={onConfirm} isLoading={isLoading}>
+        <Button variant="primary" onClick={onConfirm} isLoading={isLoading}>
           {confirmText}
         </Button>
       </div>
